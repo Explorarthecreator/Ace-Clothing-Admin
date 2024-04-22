@@ -6,18 +6,25 @@ import Navbar from "./components/Navbar";
 import MainNav from "./components/MainNav";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <Router>
       <div className=" w-full flex">
         <Navbar/>
-        <main className="w-full lg:w-4/5 bg-gray-600 h-screen overflow-y-scroll overflow-x-hidden">
+        <main className="w-full lg:w-4/5 bg-gray-400 h-screen overflow-y-scroll overflow-x-hidden ">
           <MainNav/>
           <Routes>
-            <Route path="/" element={<Homepage/>}/>
-            <Route path="/products" element={<Products/>}/>
-            <Route path="/orders" element={<Orders/>}/>
+            <Route path="/" element={<PrivateRoute/>}>
+              <Route path="/" element={<Homepage/>}/>
+            </Route>
+            <Route path="/products" element={<PrivateRoute/>}>
+              <Route path="/products" element={<Products/>}/>
+            </Route>
+            <Route path="/orders" element={<PrivateRoute/>}>
+              <Route path="/orders" element={<Orders/>}/>
+            </Route>
             <Route path="/login" element={<Login/>} />
             <Route path="/signup" element={<Signup/>} />
           </Routes>
