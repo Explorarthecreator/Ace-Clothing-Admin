@@ -18,8 +18,10 @@ console.log(auth);
 //     }
 // })
 const loggedIn = JSON.parse(localStorage.getItem('loggedIn'))
+const id = JSON.parse(localStorage.getItem('id'))
 const initialState={
     loggedIn: loggedIn? true:false,
+    id:id?id:'',
     isLoading: false,
     message:'',
     isSuccess : false,
@@ -55,7 +57,12 @@ export const signup = createAsyncThunk('auth/signup',async(formData,thunkAPI)=>{
 
         await setDoc(doc(db,'users',user.id),formDataCopy)
 
+        
         localStorage.setItem('loggedIn',JSON.stringify(true))
+        localStorage.setItem('id',JSON.stringify(user.id))
+
+        return user.id
+
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message)||error.message|| error.toString()
         
@@ -69,7 +76,9 @@ export const login = createAsyncThunk('auth/login',async(formData, thunkAPI)=>{
         const userCredential = await signInWithEmailAndPassword(auth,email,password)
         if(userCredential.user){
             localStorage.setItem('loggedIn',JSON.stringify(true))
+            localStorage.setItem('id',JSON.stringify(userCredential.user.uid))
         }
+        return userCredential.user.uid
     } catch (error) {
         const message = 'Wrong login details'
         return thunkAPI.rejectWithValue(message)
@@ -79,6 +88,7 @@ export const logout = createAsyncThunk('auth/logout',async(thunkAPI)=>{
     try {
         auth.signOut()
         localStorage.removeItem('loggedIn')
+        localStorage.removeItem('id')
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message)||error.message|| error.toString()
         
@@ -106,10 +116,11 @@ export const authSlice = createSlice({
                 state.message = action.error.message
                 state.isError = true
             })
-            .addCase(signup.fulfilled,(state)=>{
+            .addCase(signup.fulfilled,(state,action)=>{
                 state.isLoading = false
                 state.isSuccess = true
                 state.loggedIn = true
+                state.id = action.payload
             })
             .addCase(logout.fulfilled,(state)=>{
                 state.loggedIn = false
@@ -117,10 +128,11 @@ export const authSlice = createSlice({
             .addCase(login.pending,(state)=>{
                 state.isLoading = true
             })
-            .addCase(login.fulfilled,(state)=>{
+            .addCase(login.fulfilled,(state,action)=>{
                 state.isLoading = false
                 state.isSuccess = true 
                 state.loggedIn = true
+                state.id = action.payload
             })
             .addCase(login.rejected,(state,action)=>{
                 state.isLoading = false
