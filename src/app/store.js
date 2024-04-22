@@ -3,12 +3,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import navReducer from '../features/navigation/navSlice'
 import authReducer from '../features/auth/authSlice'
 import orderReducer from '../features/order/orderSlice'
+import userReducer from '../features/user/userSlice'
 
 export const store = configureStore({
   reducer: {
     // counter: counterReducer,
     nav: navReducer,
     auth: authReducer,
-    order: orderReducer
+    order: orderReducer,
+    user:userReducer
   },
 });
