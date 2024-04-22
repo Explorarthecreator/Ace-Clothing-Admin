@@ -1,13 +1,13 @@
-import { useSelector, useDispatch } from 'react-redux'
+import {  useDispatch } from 'react-redux'
 import {  FaAirbnb, FaTruck } from 'react-icons/fa6'
 import { FaHome, FaShoppingBag, FaTimes } from 'react-icons/fa'
-import { hide, show } from '../features/navigation/navSlice'
+import { hide} from '../features/navigation/navSlice'
 import { Link, useLocation } from 'react-router-dom'
-import { animate, motion, stagger } from 'framer-motion'
+import {motion } from 'framer-motion'
 // import { delay } from '@reduxjs/toolkit/dist/utils'
 
 function MobileNav() {
-    const {showNav} = useSelector((state)=> state.nav)
+
     const dispatch = useDispatch()
     const location = useLocation()
     const pathMatchRoute = (route)=>{
@@ -16,6 +16,9 @@ function MobileNav() {
         }
     }
 
+    const hideNav = ()=>{
+        dispatch(hide())
+    }
     // const variants = {
     //     open: { opacity: 1, x: 0 },
     //     closed: { opacity: 0, x: "-100%" },
@@ -66,7 +69,7 @@ function MobileNav() {
         }
     }
   return (
-    <motion.div variants={menuVars} initial="initial" animate="animate" exit={'exit'} className={` origin-left fixed w-full top-0 left-0 z-40 lg:hidden pt-7 bg-slate-300 h-screen flex flex-col justify-between`}>
+    <motion.div variants={menuVars} initial="initial" animate="animate" exit={'exit'} className={` origin-left fixed top-0 left-0 z-40 lg:hidden pt-7 bg-slate-300 h-screen flex flex-col justify-between w-4/5 md:w-1/2`}>
         <div className='absolute top-4 right-5 lg:hidden'>
             <button onClick={()=>dispatch(hide())}>
                 <FaTimes size={25}/>
@@ -83,21 +86,21 @@ function MobileNav() {
             </div>
             <motion.div variants={linkVar} initial="initial" animate="open" className=' w-4/5 m-auto text-gray-600'>
                 <div className="overflow-hidden">
-                    <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/')&&'text-black'}`} to={'/'}>
+                    <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/')&&'text-black'}`} to={'/'} onClick={hideNav}>
                         <FaHome/> Home
                     </Link>
                     
-                    <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/products')&&'text-black'}`} to={'/products'}>
+                    <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/products')&&'text-black'}`} to={'/products'} onClick={hideNav}>
                         <FaShoppingBag/> Products
                     </Link>
                     
-                    <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/orders')&&'text-black'}`} to={'/orders'}>
+                    <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/orders')&&'text-black'}`} to={'/orders'} onClick={hideNav}>
                         <FaTruck/> Order
                     </Link>
                 </div>
             </motion.div>
         </div>
-        <div className='py-7 text-center'>
+        <div className='py-7 text-center border-t border-t-gray-700'>
             &copy; 2024 Explorar
         </div>
     </motion.div>

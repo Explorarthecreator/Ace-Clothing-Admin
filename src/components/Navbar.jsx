@@ -1,14 +1,10 @@
-import { useSelector, useDispatch } from 'react-redux'
+
 import {  FaAirbnb, FaTruck } from 'react-icons/fa6'
-import { FaHome, FaShoppingBag, FaTimes } from 'react-icons/fa'
-import { hide, show } from '../features/navigation/navSlice'
+import { FaHome, FaShoppingBag } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import MobileNav from './MobileNav'
+
 
 function Navbar() {
-    const {showNav} = useSelector((state)=> state.nav)
-    const dispatch = useDispatch()
     const location = useLocation()
     const pathMatchRoute = (route)=>{
         if (route === location.pathname){
