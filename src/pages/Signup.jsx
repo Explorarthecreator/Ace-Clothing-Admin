@@ -40,8 +40,15 @@ function Signup() {
     const submit = (e)=>{
         e.preventDefault()
         // delete formData.password2
-        dispatch(signup(formData))
-        console.log(formData);
+
+        if(password2.length>=8 && password2===password){
+            dispatch(signup(formData))
+            console.log(formData);
+        }else{
+            console.log("Not complete");
+            return
+        }
+        
     }
 
     if(isLoading){
@@ -71,38 +78,38 @@ function Signup() {
                 <div>
                     <label className="input input-bordered input-success flex items-center gap-3 bg-white text-black ">
                         <FaUser/>
-                        <input type="text" className="grow" placeholder="Enter your name" id='name' value={name} onChange={change} />
+                        <input type="text" className="grow" placeholder="Enter your name" id='name' value={name} onChange={change} required />
                     </label>
                 </div>
 
                 <div>
                     <label className="input input-bordered input-success flex items-center gap-3 bg-white text-black ">
                         <FaEnvelope/>
-                        <input type="email" className="grow" placeholder="Enter your email" id='email' value={email} onChange={change} />
+                        <input type="email" className="grow" placeholder="Enter your email" id='email' value={email} onChange={change} required />
                     </label>
                 </div>
                 
                 <div>
                     <label className={`input input-bordered flex items-center gap-3 bg-white text-black border-black ${password.length>=8?'input-success':'input-error'}`}>
                         <FaKey/>
-                        <input type="password" className="grow" placeholder="Enter your password" id='password' value={password} onChange={change} />
+                        <input type="password" className="grow" placeholder="Enter your password" id='password' value={password} onChange={change} required/>
                     </label>
                 </div>
 
                 <div>
                     <label className={`input input-bordered flex items-center gap-3 bg-white text-black border-black ${password2.length>=8 && password2===password?'input-success':'input-error'}`}>
                         <FaKey/>
-                        <input type="password" className="grow" placeholder="Confirm your password" id='password2' value={password2} onChange={change} />
+                        <input type="password" className="grow" placeholder="Confirm your password" id='password2' value={password2} onChange={change} required />
                     </label>
                 </div>
 
-                <button className='btn w-full md:w-2/5 md:m-auto text-white'>
+                <button className={`btn w-full md:w-2/5 md:m-auto text-white bg-black ${(email === '' || password === '' || name === '' || password2 === '')&&'btn-disabled'}`}>
                     Submit
                 </button>
             </div>
 
             <p className='mt-9 text-black'>
-                Have an account? <Link className='btn ml-3 text-white' to={'/login'}>Login</Link>
+                Have an account? <Link className='btn ml-3 text-white bg-black' to={'/login'}>Login</Link>
             </p>
 
         </form>
