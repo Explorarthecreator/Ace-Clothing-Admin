@@ -13,11 +13,11 @@ const initialState = {
 
 export const fetchOrders = createAsyncThunk('order/getAll',async(thunkAPI)=>{
     try {
-        console.log("object");
+        // console.log("object");
         const docRef = collection(db,'orders')
 
         const docSnap = await getDocs(docRef)
-        console.log(docSnap);
+        // console.log(docSnap);
         let orders = []
 
         docSnap.forEach((doc)=>{
