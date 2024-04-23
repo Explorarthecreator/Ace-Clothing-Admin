@@ -1,32 +1,28 @@
-import { useState } from "react";
+// import { useState } from "react";
 import UserItem from "./UserItem"
+import { updateId, updateUserStatus } from "../features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import BoxSpinner from "./BoxSpinner";
 
 
 function UserList({users}) {
-    const [details, setDetails] = useState({})
-    const [id, setId] = useState('')
-    const showModal = (user,id)=>{
-        // setDetails(user)
-        // // console.log(user,id);
-        // ger(id)
-        setId(id)
+    // const [id, setId] = useState({})
+    const {id, isLoading} = useSelector((state)=>state.user)
+    const dispatch = useDispatch()
+    const showModal = (id)=>{
+        
+        dispatch(updateId(id))
         document.getElementById('my_modal_1').showModal()
-        // window.confirm('Are you sure')
-        // if(changeStatus()){
-        //     console.log('good');
-        // }else{
-        //     console.log('object');
-        // }
-
     }
     const changeStatus = (e)=>{
         e.preventDefault()
         // ger(id)
-        // console.log(id);
-        return true
+        dispatch(updateUserStatus(id))
+        console.log(id);
+        
     }
-    const ger = (det)=>{
-        console.log(det);
+    if(isLoading){
+      return <BoxSpinner col={'black'}/>
     }
   return (
     <div className="overflow-x-auto">
@@ -53,7 +49,7 @@ function UserList({users}) {
 
                   {
                     users.map((user)=>(
-                        <UserItem key={user.id} id={user.id} user={user.data} onDelete={showModal}/>
+                        <UserItem key={user.id} id={user.id} user={user.data} updateStatus={showModal}/>
                     ))
                   }
                 </tbody>
