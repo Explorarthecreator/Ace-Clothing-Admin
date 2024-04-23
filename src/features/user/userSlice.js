@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase.config";
 
 // const auth = getAuth()
@@ -9,7 +9,8 @@ const initialState = {
     isLoading: false,
     message:'',
     isSuccess: false,
-    isError: false 
+    isError: false ,
+    id:''
 }
 
 export const fetchUsers = createAsyncThunk('user/getAll',async(id,thunkAPI)=>{
@@ -45,11 +46,27 @@ export const fetchUsers = createAsyncThunk('user/getAll',async(id,thunkAPI)=>{
     }
 })
 
+export const updateUserStatus = createAsyncThunk('user/update', async(id, thunkAPI)=>{
+    try {
+        const userRef = doc(db,'users',id)
+        await updateDoc(userRef,{
+            isAdmin: true
+        })
+    } catch (error) {
+        const message = error.message
+
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 export const userSlice = createSlice({
     name:'user',
     initialState,
     reducers:{
-        reset:(state)=>initialState
+        reset:(state)=>initialState,
+        updateId:(state,action)=>{
+            state.id = action.payload
+        }
     },
     extraReducers: (builder)=>{
         builder
@@ -65,9 +82,21 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.user = action.payload
             })
+            .addCase(updateUserStatus.pending,(state)=>{
+                state.isLoading = true
+            })
+            .addCase(updateUserStatus.rejected, (state,action)=>{
+                state.isError = true
+                state.message = action.payload
+                state.isLoading = false
+            })
+            .addCase(updateUserStatus.fulfilled,(state,action)=>{
+                state.isLoading = false
+                state.isSuccess = true
+            })
     }
 })
 
-export const {reset} = userSlice.actions
+export const {reset,updateId} = userSlice.actions
 
 export default userSlice.reducer
