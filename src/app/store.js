@@ -4,6 +4,7 @@ import navReducer from '../features/navigation/navSlice'
 import authReducer from '../features/auth/authSlice'
 import orderReducer from '../features/order/orderSlice'
 import userReducer from '../features/user/userSlice'
+import cartReducer from '../features/cart/cartSlice'
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     nav: navReducer,
     auth: authReducer,
     order: orderReducer,
-    user:userReducer
+    user:userReducer,
+    cart: cartReducer
   },
 });
