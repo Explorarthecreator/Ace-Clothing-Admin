@@ -69,7 +69,7 @@ function MobileNav() {
         }
     }
   return (
-    <motion.div variants={menuVars} initial="initial" animate="animate" exit={'exit'} className={` origin-left fixed top-0 left-0 z-40 lg:hidden pt-7 bg-slate-300 h-screen flex flex-col justify-between w-4/5 md:w-1/2`}>
+    <motion.div variants={menuVars} initial="initial" animate="animate" exit={'exit'} className={` origin-left fixed top-0 left-0 z-40 lg:hidden pt-7 bg-slate-700 text-white h-screen flex flex-col justify-between w-4/5 md:w-1/3`}>
         <div className='absolute top-4 right-5 lg:hidden'>
             <button onClick={()=>dispatch(hide())}>
                 <FaTimes size={25}/>
@@ -84,7 +84,7 @@ function MobileNav() {
                     Ace Clothing
                 </h3>
             </div>
-            <motion.div variants={linkVar} initial="initial" animate="open" className=' w-4/5 m-auto text-gray-600'>
+            <motion.div variants={linkVar} initial="initial" animate="open" className=' w-4/5 m-auto '>
                 <div className="overflow-hidden">
                     <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/')&&'text-black'}`} to={'/'} onClick={hideNav}>
                         <FaHome/> Home
@@ -100,7 +100,7 @@ function MobileNav() {
                 </div>
             </motion.div>
         </div>
-        <div className='py-7 text-center border-t border-t-gray-700'>
+        <div className='py-7 text-center border-t border-t-gray-300'>
             &copy; 2024 Explorar
         </div>
     </motion.div>
