@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import Spinner from "../components/Spinner"
 import { useSelector, useDispatch } from "react-redux"
-import { fetchOrders } from "../features/order/orderSlice"
+import { fetchOrders} from "../features/order/orderSlice"
 import { fetchUsers } from "../features/user/userSlice"
 import { Doughnut } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -14,14 +14,18 @@ function Homepage() {
   ChartJS.register(ArcElement, Tooltip, Legend);
   const {isLoading, orders} = useSelector((state)=>state.order)
   const {id} = useSelector((state)=>state.auth)
-  const {user, isLoading: userLoading} = useSelector((state)=>state.user)
+  const {user, isLoading: userLoading, isSuccess} = useSelector((state)=>state.user)
   const dispatch = useDispatch()
 
 
   useEffect(()=>{
     dispatch(fetchOrders())
     dispatch(fetchUsers(id))
-  },[dispatch,id])
+
+    if(isSuccess){
+      dispatch(fetchUsers(id))
+    }
+  },[dispatch,id, isSuccess])
 
 // Chart JS
   const data = {
@@ -41,7 +45,6 @@ function Homepage() {
           'rgba(0, 0, 0, 1)',
         ],
         borderWidth: 1,
-        // radius:'50%',
       },
     ],
   };
