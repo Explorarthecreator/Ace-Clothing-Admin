@@ -1,6 +1,6 @@
 
 
-function UserItem({user,onDelete,id}) {
+function UserItem({user,updateStatus,id}) {
   return (
                 <tr className=" border-gray-600 border-b-0">
                     <td>
@@ -25,7 +25,7 @@ function UserItem({user,onDelete,id}) {
                     </td>
                     {
                         !user.isAdmin && <th>
-                        <button className="btn btn-outline btn-success btn-sm" onClick={()=>onDelete(user,id)}>
+                        <button className="btn btn-outline btn-success btn-sm" onClick={()=>updateStatus(id)}>
                           Make Admin
                         </button>
                       </th>
