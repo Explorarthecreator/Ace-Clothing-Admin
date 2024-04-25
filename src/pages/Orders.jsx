@@ -1,8 +1,29 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import OrderList from "../components/OrderList"
+import { useEffect } from "react"
+import { fetchOrders } from "../features/order/orderSlice"
+import Spinner from "../components/Spinner"
 
 function Orders() {
-  const {orders} = useSelector((state)=>state.order)
+  const {orders, isLoading, isSuccess, isError,message} = useSelector((state)=>state.order)
+  const dispatch = useDispatch()
+  useEffect(()=>{
+    dispatch(fetchOrders())
+    if(orders.length <=0){
+      dispatch(fetchOrders())
+    }
+    if(isSuccess){
+      console.log("object");
+      // dispatch(fetchOrders())
+    }
+    if(isError){
+      console.log(message);
+    }
+  },[orders.length,dispatch, isError, isSuccess, message])
+
+  if(isLoading){
+    return <Spinner/>
+  }
   return (
     <div className="p-5 lg:p-10">
       <h1 className="text-black text-3xl font-medium">
