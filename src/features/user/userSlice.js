@@ -6,6 +6,7 @@ import { db } from "../../firebase.config";
 // console.log(auth);
 const initialState = {
     user: [],
+    singleUser:{},
     isLoading: false,
     message:'',
     isSuccess: false,
@@ -46,6 +47,21 @@ export const fetchUsers = createAsyncThunk('user/getAll',async(id,thunkAPI)=>{
     }
 })
 
+export const fetchUser = createAsyncThunk('user/getOne',async(id,thunkAPI)=>{
+    try {
+        const docRef = doc(db,'users',id)
+
+        const docSnap = await getDoc(docRef)
+
+        console.log(docSnap.data());
+        return docSnap.data()
+    } catch (error) {
+        const message = error.message
+
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 export const updateUserStatus = createAsyncThunk('user/update', async(id, thunkAPI)=>{
     try {
         const userRef = doc(db,'users',id)
@@ -66,6 +82,9 @@ export const userSlice = createSlice({
         reset:(state)=>initialState,
         updateId:(state,action)=>{
             state.id = action.payload
+        },
+        resetSingleUser:(state)=>{
+            state.singleUser = {}
         }
     },
     extraReducers: (builder)=>{
@@ -94,9 +113,22 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
             })
+            .addCase(fetchUser.pending,(state)=>{
+                state.isLoading = true
+            })
+            .addCase(fetchUser.rejected,(state,action)=>{
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(fetchUser.fulfilled,(state,action)=>{
+                state.isLoading = false
+                state.isSuccess = true
+                state.singleUser = action.payload
+            })
     }
 })
 
-export const {reset,updateId} = userSlice.actions
+export const {reset,updateId, resetSingleUser} = userSlice.actions
 
 export default userSlice.reducer
