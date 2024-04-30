@@ -8,7 +8,9 @@ const initialState = {
     isLoading: false,
     message:'',
     isSuccess: false,
-    isError: false 
+    isError: false,
+    statusSuccess: false,
+    statusError : false 
 }
 
 export const fetchOrders = createAsyncThunk('order/getAll',async(thunkAPI)=>{
@@ -27,12 +29,12 @@ export const fetchOrders = createAsyncThunk('order/getAll',async(thunkAPI)=>{
             })
         })
 
-        console.log(orders);
+        // console.log(orders);
         return orders
     } catch (error) {
         const message = 'Error getting details'
 
-        console.log(error.message);
+        // console.log(error.message);
         return thunkAPI.rejectWithValue(message)
     }
 })
@@ -128,24 +130,27 @@ export const orderslice = createSlice({
             })
             .addCase(closeOrder.rejected,(state,action)=>{
                 state.isLoading = false
-                state.isError = true
+                state.statusError = true
                 state.message = action.payload
             })
             .addCase(closeOrder.fulfilled,(state)=>{
                 state.isLoading = false
-                state.isSuccess = true
+                state.statusSuccess = true
+                // state.isSuccess = true
+
             })
             .addCase(pendingOrder.pending,(state)=>{
                 state.isLoading = true
             })
             .addCase(pendingOrder.rejected,(state,action)=>{
                 state.isLoading = false
-                state.isError = true
+                state.statusError = true
                 state.message = action.payload
             })
             .addCase(pendingOrder.fulfilled,(state)=>{
                 state.isLoading = false
-                state.isSuccess = true
+                state.statusSuccess = true
+                // state.isSuccess = true
             })
     }
 })

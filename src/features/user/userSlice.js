@@ -11,6 +11,8 @@ const initialState = {
     message:'',
     isSuccess: false,
     isError: false ,
+    updateSucess:false,
+    updateError:false,
     id:''
 }
 
@@ -34,7 +36,7 @@ export const fetchUsers = createAsyncThunk('user/getAll',async(id,thunkAPI)=>{
                     data: user.data()
                 })
             })
-            console.log(users);
+            // console.log(users);
             return users
         }else{
             throw new Error ('You are not authorised to view this page')
@@ -105,12 +107,13 @@ export const userSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(updateUserStatus.rejected, (state,action)=>{
-                state.isError = true
+                state.updateError = true
                 state.message = action.payload
                 state.isLoading = false
             })
             .addCase(updateUserStatus.fulfilled,(state,action)=>{
                 state.isLoading = false
+                state.updateSucess = true
                 state.isSuccess = true
             })
             .addCase(fetchUser.pending,(state)=>{
