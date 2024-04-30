@@ -12,7 +12,7 @@ function Navbar() {
         }
     }
   return (
-    <div className={` hidden lg:flex flex-col  w-1/5 pt-7 bg-slate-300 h-screen`}>
+    <div className={` hidden lg:flex flex-col  w-1/5 pt-7 bg-slate-700 h-screen text-white`}>
         {/* <div className='absolute top-4 right-5 lg:hidden'>
             <button onClick={()=>dispatch(hide())}>
                 <FaTimes size={25}/>
@@ -26,7 +26,7 @@ function Navbar() {
                 Ace Clothing
             </h3>
         </div>
-        <div className=' w-4/5 text-gray-600'>
+        <div className=' w-4/5 text-gray-200'>
             <Link className={`flex items-center gap-2 w-1/2 m-auto py-3 text-xl ${pathMatchRoute('/')&&'text-black'}`} to={'/'}>
                 <FaHome/> Home
             </Link>
