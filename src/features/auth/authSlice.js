@@ -8,7 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
 const auth = getAuth()
 // auth.signOut()
 
-console.log(auth);
+// console.log(auth);
 // onAuthStateChanged(auth,(user)=>{
 //     if(user){
 //         lg = true
