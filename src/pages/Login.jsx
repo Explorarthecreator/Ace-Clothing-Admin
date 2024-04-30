@@ -4,6 +4,7 @@ import { reset, login } from '../features/auth/authSlice'
 import { FaKey, FaUser } from 'react-icons/fa6'
 import { Link, useNavigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
+import { toast } from 'react-toastify'
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -21,11 +22,11 @@ function Login() {
 
     useEffect(()=>{
         if(isError){
-            console.log('An error occured');
-            console.log(message);
+            toast.error(message)
+            setLoading(false)
         }
         if(isSuccess){
-            console.log('it was succesfull');
+            toast.success('Login Sucessful')
             navigate('/')
         }
 
@@ -43,7 +44,7 @@ function Login() {
     const submit = (e)=>{
         e.preventDefault()
 
-        console.log(formData);
+        // console.log(formData);
 
         setLoading(true)
         dispatch(login(formData))
@@ -75,7 +76,7 @@ function Login() {
                 </div>
 
                 {
-                    loading? <button className="btn btn-disabled w-full lg:w-2/5 md:w-2/5 m-auto text-white">
+                    loading? <button className="btn cursor-not-allowed w-full lg:w-2/5 md:w-2/5 m-auto text-white">
                     <span className="loading loading-spinner"></span>
                     loading
                   </button>: <button className={`btn w-full lg:w-2/5 md:w-2/5 m-auto text-white bg-black ${(email === '' || password === '')&&'btn-disabled'}`}>

@@ -47,7 +47,7 @@ export const useAuthStatus=()=> {
     // },[loggedIn])
 
     useMemo(()=>{
-        console.log(loggedIn);
+        // console.log(loggedIn);
         if(loggedIn){
             setLogged(true)
         }else{

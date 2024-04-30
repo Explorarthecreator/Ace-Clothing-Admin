@@ -6,6 +6,7 @@ import { fetchUser, resetSingleUser } from "../features/user/userSlice"
 import BoxSpinner from "./BoxSpinner"
 import { useState } from "react"
 import { closeOrder, fetchOrders, pendingOrder } from "../features/order/orderSlice"
+import { toast } from "react-toastify"
 
 
 function OrderList({orders}) {
@@ -34,7 +35,8 @@ function OrderList({orders}) {
     }else{
       dispatch(reset())
       dispatch(resetSingleUser())
-      console.log("Error getting order details");
+      // console.log("Error getting order details");
+      toast.error("Error getting order details")
     }
   }
   return (

@@ -18,9 +18,12 @@ function UserList({users}) {
         e.preventDefault()
         // ger(id)
         dispatch(updateUserStatus(id))
-        console.log(id);
+        // console.log(id);
         
     }
+    
+
+
     if(isLoading){
       return <BoxSpinner col={'black'}/>
     }

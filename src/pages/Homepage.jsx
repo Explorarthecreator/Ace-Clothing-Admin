@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { fetchOrders} from "../features/order/orderSlice"
 import { fetchUsers } from "../features/user/userSlice"
 import { Doughnut } from "react-chartjs-2"
+import { toast } from "react-toastify"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import UserList from "../components/UserList"
 import BoxSpinner from "../components/BoxSpinner"
@@ -12,20 +13,31 @@ import BoxSpinner from "../components/BoxSpinner"
 
 function Homepage() {
   ChartJS.register(ArcElement, Tooltip, Legend);
-  const {isLoading, orders} = useSelector((state)=>state.order)
+  const {isLoading, orders, isError, message: orderMessage} = useSelector((state)=>state.order)
   const {id} = useSelector((state)=>state.auth)
-  const {user, isLoading: userLoading, isSuccess} = useSelector((state)=>state.user)
+  const {user, isLoading: userLoading, isSuccess, updateError, updateSucess, message} = useSelector((state)=>state.user)
   const dispatch = useDispatch()
 
 
+  
   useEffect(()=>{
     dispatch(fetchOrders())
     dispatch(fetchUsers(id))
 
+    if(isError){
+      toast.error(orderMessage)
+    }
     if(isSuccess){
       dispatch(fetchUsers(id))
+      if(updateSucess){
+        toast.success('User status updated successfully')
+      }
     }
-  },[dispatch,id, isSuccess])
+    if(updateError){
+      toast.error(message)
+    }
+    
+  },[dispatch,id, isSuccess, updateError,updateSucess, message, isError, orderMessage])
 
 // Chart JS
   const data = {

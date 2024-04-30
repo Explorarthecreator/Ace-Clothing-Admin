@@ -3,23 +3,30 @@ import OrderList from "../components/OrderList"
 import { useEffect } from "react"
 import { fetchOrders } from "../features/order/orderSlice"
 import Spinner from "../components/Spinner"
+import { toast } from "react-toastify"
 
 function Orders() {
-  const {orders, isLoading, isSuccess, isError,message} = useSelector((state)=>state.order)
+  const {orders, isLoading, isSuccess, isError,message, statusSuccess, statusError} = useSelector((state)=>state.order)
   const dispatch = useDispatch()
   useEffect(()=>{
+    if(statusSuccess){
+      toast.success('Order updated successfully')
+    }
+    if (statusError){
+      toast.error(message)
+    }
     dispatch(fetchOrders())
     if(orders.length <=0){
       dispatch(fetchOrders())
     }
     if(isSuccess){
-      console.log("object");
-      // dispatch(fetchOrders())
+      toast.success("Orders loaded successfully")
     }
+    
     if(isError){
-      console.log(message);
+      toast.error(message)
     }
-  },[orders.length,dispatch, isError, isSuccess, message])
+  },[orders.length,dispatch, isError, isSuccess, message, statusError, statusSuccess])
 
   if(isLoading){
     return <Spinner/>
