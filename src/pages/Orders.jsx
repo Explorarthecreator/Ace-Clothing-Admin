@@ -19,9 +19,9 @@ function Orders() {
     if(orders.length <=0){
       dispatch(fetchOrders())
     }
-    if(isSuccess){
-      toast.success("Orders loaded successfully")
-    }
+    // if(isSuccess){
+    //   toast.success("Orders loaded successfully")
+    // }
     
     if(isError){
       toast.error(message)

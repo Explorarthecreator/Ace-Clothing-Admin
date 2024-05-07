@@ -64,7 +64,8 @@ export const signup = createAsyncThunk('auth/signup',async(formData,thunkAPI)=>{
         return user.id
 
     } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.message)||error.message|| error.toString()
+        // const message = (error.response && error.response.data && error.response.data.message)||error.message|| error.toString()
+        const message = "Details not correct!"
         
         return thunkAPI.rejectWithValue(message)
     }
@@ -113,7 +114,7 @@ export const authSlice = createSlice({
             })
             .addCase(signup.rejected,(state,action)=>{
                 state.isLoading = false
-                state.message = action.error.message
+                state.message = action.payload
                 state.isError = true
             })
             .addCase(signup.fulfilled,(state,action)=>{

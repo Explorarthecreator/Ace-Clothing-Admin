@@ -55,7 +55,6 @@ export const fetchUser = createAsyncThunk('user/getOne',async(id,thunkAPI)=>{
 
         const docSnap = await getDoc(docRef)
 
-        console.log(docSnap.data());
         return docSnap.data()
     } catch (error) {
         const message = error.message

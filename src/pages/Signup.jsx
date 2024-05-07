@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { reset, signup } from '../features/auth/authSlice'
 import { FaEnvelope, FaKey, FaUser } from 'react-icons/fa6'
 import { useNavigate, Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 
 function Signup() {
@@ -23,7 +24,8 @@ function Signup() {
 
     useEffect(()=>{
         if(isError){
-            console.log(message);
+            // console.log(message);
+            toast.error(message)
         }
 
         if(isSuccess || loggedIn){
@@ -43,9 +45,10 @@ function Signup() {
 
         if(password2.length>=8 && password2===password){
             dispatch(signup(formData))
-            console.log(formData);
+            // console.log(formData);
         }else{
-            console.log("Not complete");
+            // console.log("Not complete");
+            toast.error('Not complete data')
             return
         }
         
@@ -102,10 +105,16 @@ function Signup() {
                         <input type="password" className="grow" placeholder="Confirm your password" id='password2' value={password2} onChange={change} required />
                     </label>
                 </div>
-
-                <button className={`btn w-full md:w-2/5 md:m-auto text-white bg-black ${(email === '' || password === '' || name === '' || password2 === '')&&'btn-disabled'}`}>
-                    Submit
-                </button>
+                {
+                    isLoading? <button className="btn cursor-not-allowed w-full lg:w-2/5 md:w-2/5 m-auto text-white">
+                    <span className="loading loading-spinner"></span>
+                    loading
+                  </button>:
+                    <button className={`btn w-full md:w-2/5 md:m-auto text-white bg-black ${(email === '' || password === '' || name === '' || password2 === '')&&'btn-disabled'}`}>
+                        Submit
+                    </button>
+                }
+                
             </div>
 
             <p className='mt-9 text-black'>
