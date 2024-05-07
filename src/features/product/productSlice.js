@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase.config";
 
 
@@ -8,7 +8,10 @@ const initialState = {
     isLoading: false,
     isSuccess: false,
     isError: false,
-    message: ''
+    message: '',
+    updateLoading: false,
+    updateError: false,
+    updateSuccess: false
 }
 
 
@@ -26,8 +29,6 @@ export const fetchProducts = createAsyncThunk('product/getAll',async(thunkAPI)=>
                 data: data.data()
             })
         })
-        console.log(products);
-
         return products
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message)
@@ -41,6 +42,19 @@ export const createProduct = createAsyncThunk('product/create',async(formData,th
         return thunkAPI.rejectWithValue(error.message)
     }
 })
+
+export const updateProduct = createAsyncThunk('product/update',async(updateData,thunkAPI)=>{
+    const {id, formData} = updateData
+    try {
+        const productRef = doc(db,'products',id)
+
+        await updateDoc(productRef,formData)
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message)
+    }
+})
+
+
 const ProductSlice = createSlice({
     name: 'product',
     initialState,
@@ -73,6 +87,18 @@ const ProductSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.products = action.payload
+        })
+        .addCase(updateProduct.pending,(state)=>{
+            state.updateLoading = true
+        })
+        .addCase(updateProduct.rejected,(state, action)=>{
+            state.updateLoading = false
+            state.updateError = true
+            state.message = action.payload
+        })
+        .addCase(updateProduct.fulfilled,(state,action)=>{
+            state.updateLoading =  false
+            state.updateSuccess = true
         })
     }
 })
