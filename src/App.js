@@ -1,57 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Homepage from "./pages/Homepage";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Navbar from "./components/Navbar";
+import MainNav from "./components/MainNav";
+import Products from "./pages/Products";
+import Orders from "./pages/Orders";
+import PrivateRoute from "./components/PrivateRoute";
+import NewProduct from "./pages/NewProduct";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <>
+      <Router>
+        <div className=" w-full flex">
+          <Navbar/>
+          <main className="w-full lg:w-4/5 bg-gray-400 h-screen overflow-y-scroll overflow-x-hidden ">
+            <MainNav/>
+            <Routes>
+              <Route path="/" element={<PrivateRoute/>}>
+                <Route path="/" element={<Homepage/>}/>
+              </Route>
+              <Route path="/products" element={<PrivateRoute/>}>
+                <Route path="/products" element={<Products/>}/>
+              </Route>
+              <Route path="/products/add-product" element={<PrivateRoute/>}>
+                <Route path="/products/add-product" element={<NewProduct/>}/>
+              </Route>
+              <Route path="/orders" element={<PrivateRoute/>}>
+                <Route path="/orders" element={<Orders/>}/>
+              </Route>
+              <Route path="/login" element={<Login/>} />
+              <Route path="/signup" element={<Signup/>} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+      <ToastContainer position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={true}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+      />
+    </>
   );
 }
 
