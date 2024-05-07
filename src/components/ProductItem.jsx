@@ -1,7 +1,6 @@
-import { FaPen, FaTrash } from "react-icons/fa"
 
 
-function ProductItem({data,openModal}) {
+function ProductItem({data,openModal, id}) {
   return (
     <div className=" card card-compact bg-white w-full md:w-60 xl:w-64 shadow-xl">
         <div className="card-body flex-row">
@@ -21,9 +20,7 @@ function ProductItem({data,openModal}) {
               </div>
             </div>
             <div className=" flex items-center gap-3">
-              {/* <FaPen className=" cursor-pointer" onClick={()=>openModal(data)}/> */}
-              {/* <FaTrash className=" cursor-pointer"/> */}
-              <p className="link" onClick={()=>openModal(data)}>
+              <p className="link" onClick={()=>openModal(data,id)}>
                 View
               </p>
             </div>
