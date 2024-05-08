@@ -118,15 +118,15 @@ function NewProduct() {
         // toast.success('Oba is King')
         // console.log(formData);
 
-        // const imageUrl = await storeImage(imago).catch((error)=>{
-        //     toast.error(error)
-        //     return
-        // })
+        const imageUrl = await storeImage(imago).catch((error)=>{
+            toast.error(error)
+            return
+        })
 
-        // formData.image = imageUrl
+        formData.image = imageUrl
 
 
-        // dispatch(createProduct(formData))
+        dispatch(createProduct(formData))
         // console.log(formData);
 
 
