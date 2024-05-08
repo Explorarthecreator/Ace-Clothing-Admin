@@ -28,6 +28,7 @@ function Products() {
 
     if(products.length < 1){
       dispatch(fetchProducts())
+      // dispatch(reset())
     }
 
     if(updateError){

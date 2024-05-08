@@ -85,7 +85,7 @@ const ProductSlice = createSlice({
         })
         .addCase(fetchProducts.fulfilled,(state,action)=>{
             state.isLoading = false
-            state.isSuccess = true
+            // state.isSuccess = true
             state.products = action.payload
         })
         .addCase(updateProduct.pending,(state)=>{
