@@ -83,7 +83,6 @@ function Homepage() {
                     orders.filter((order)=>order.data.status === 'open').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
 
               <div className="stat bg-white text-black">
@@ -93,7 +92,6 @@ function Homepage() {
                     orders.filter((order)=>order.data.status === 'pending').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
 
               <div className="stat bg-white text-black">
@@ -103,7 +101,6 @@ function Homepage() {
                     orders.filter((order)=>order.data.status === 'closed').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
           
             </div>

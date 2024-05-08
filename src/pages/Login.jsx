@@ -43,9 +43,6 @@ function Login() {
     }
     const submit = (e)=>{
         e.preventDefault()
-
-        // console.log(formData);
-
         setLoading(true)
         dispatch(login(formData))
         

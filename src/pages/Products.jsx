@@ -28,7 +28,6 @@ function Products() {
 
     if(products.length < 1){
       dispatch(fetchProducts())
-      // dispatch(reset())
     }
 
     if(updateError){
@@ -120,7 +119,6 @@ function Products() {
               <label className=" text-lg font-medium">
                 Description
               </label>
-
               {
                 edit?
                   <textarea id="description" value={description} className=" textarea text-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={onChange}></textarea>
@@ -137,7 +135,6 @@ function Products() {
               <label className=" text-lg font-medium">
                 Price
               </label>
-
               {
                 edit?
                   <input type="number" id="price" min={1}  value={price} className=" input input-black text-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={onChange}/>:
@@ -153,7 +150,6 @@ function Products() {
                 <label className=" text-lg font-medium">
                   Tag
                 </label>
-
                 {
                   edit?
                   <input type="text" id="tag"  value={tag} className=" input input-black text-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={onChange}/>:
@@ -169,7 +165,6 @@ function Products() {
                 <label className=" text-lg font-medium">
                   Size
                 </label>
-
                 {
                   edit?
                   <input type="text" id="size" value={size} className=" input input-black text-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={onChange}/>:

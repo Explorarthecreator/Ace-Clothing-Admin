@@ -19,10 +19,6 @@ function Orders() {
     if(orders.length <=0){
       dispatch(fetchOrders())
     }
-    // if(isSuccess){
-    //   toast.success("Orders loaded successfully")
-    // }
-    
     if(isError){
       toast.error(message)
     }
@@ -45,7 +41,6 @@ function Orders() {
                 orders.filter((order)=>order.data.status === 'open').length
               }
             </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
             </div>
 
               <div className="stat bg-white text-black">
@@ -55,7 +50,6 @@ function Orders() {
                     orders.filter((order)=>order.data.status === 'pending').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
 
               <div className="stat bg-white text-black">
@@ -65,17 +59,10 @@ function Orders() {
                     orders.filter((order)=>order.data.status === 'closed').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
           
       </div>
 
-      {/* {
-        orders.map((order)=>(
-          <OrderList key={order.id} orders={order.data}/>
-        ))
-      } */}
-      {/* <OrderList  orders={orders.data}/> */}
       {
         orders.length >=1 && <OrderList orders={orders}/>
       }
