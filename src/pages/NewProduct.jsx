@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 function NewProduct() {
 
     const {isLoading, isSuccess, isError, message} = useSelector((state)=> state.product)
-    const [imago, setImago] = useState({})
+    const [imago, setImago] = useState(null)
     // const [url, setUrl] = useState(null)
 
     const dispatch = useDispatch()
@@ -87,12 +87,12 @@ function NewProduct() {
     }
     const change = (e)=>{
         if(e.target.files){
-            console.log("Na picture you change o");
+            // console.log("Na picture you change o");
             setImago(e.target.files[0])
 
         }
         else{
-            console.log("No be picture you change o");
+            // console.log("No be picture you change o");
             setFormData((prevState)=>({
                 ...prevState,
                 [e.target.id]:e.target.value
@@ -110,18 +110,23 @@ function NewProduct() {
             toast.error('Price cannot be that small')
             return
         }
+        if(imago === null){
+            toast.error('Please upload an image')
+            return
+        }
+        // console.log(imago);
         // toast.success('Oba is King')
         // console.log(formData);
 
-        const imageUrl = await storeImage(imago).catch((error)=>{
-            toast.error(error)
-            return
-        })
+        // const imageUrl = await storeImage(imago).catch((error)=>{
+        //     toast.error(error)
+        //     return
+        // })
 
-        formData.image = imageUrl
+        // formData.image = imageUrl
 
 
-        dispatch(createProduct(formData))
+        // dispatch(createProduct(formData))
         // console.log(formData);
 
 
