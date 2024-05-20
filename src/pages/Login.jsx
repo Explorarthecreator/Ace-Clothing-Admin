@@ -29,23 +29,18 @@ function Login() {
             toast.success('Login Sucessful')
             navigate('/')
         }
-
         dispatch(reset())
     },[isError,isLoading,isSuccess,message,navigate,dispatch])
     const change = (e)=>{
         setFormData((prevState)=>({
             ...prevState,
             [e.target.id]:e.target.value
-        }))
-
-        
-        
+        })) 
     }
     const submit = (e)=>{
         e.preventDefault()
         setLoading(true)
         dispatch(login(formData))
-        
     }
     if(isLoading){
         <Spinner/>
@@ -71,7 +66,6 @@ function Login() {
                         <input type="password" className="grow" placeholder="Enter your password" id='password' value={password} onChange={change}/>
                     </label>
                 </div>
-
                 {
                     loading? <button className="btn cursor-not-allowed w-full lg:w-2/5 md:w-2/5 m-auto text-white">
                     <span className="loading loading-spinner"></span>
@@ -79,10 +73,8 @@ function Login() {
                   </button>: <button className={`btn w-full lg:w-2/5 md:w-2/5 m-auto text-white bg-black ${(email === '' || password === '')&&'btn-disabled'}`}>
                     Login
                 </button>
-                }
-                
+                } 
             </div>
-
             <p className='mt-9 text-black'>
                 New User? <Link className='btn ml-3 text-white bg-black' to={'/signup'}>Signup</Link>
             </p>
