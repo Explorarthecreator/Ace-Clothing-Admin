@@ -5,7 +5,7 @@ function OrderItem({order,show,id}) {
     <tr className=" border-gray-600 border-b-0">
       <td>
         {
-          order.amount
+          order.total?.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')
         }
       </td>              
       <td >
@@ -17,7 +17,7 @@ function OrderItem({order,show,id}) {
         
       </td>
       <th>
-        <button className="btn btn-outline border border-black text-black hover:bg-black hover:text-white btn-sm" onClick={()=>show(order.cartRef,order.userRef,order.status,id)}>
+        <button className="btn btn-outline border border-black text-black hover:bg-black hover:text-white btn-sm" onClick={()=>show(order,id)}>
           view details
         </button>
       </th>
