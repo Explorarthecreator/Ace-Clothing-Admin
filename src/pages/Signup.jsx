@@ -14,7 +14,6 @@ function Signup() {
         password2:''
     })
 
-    // const {signup}
     const {isLoading, isError, isSuccess, message, loggedIn} = useSelector((state)=> state.auth)
 
     const dispatch = useDispatch()
@@ -24,7 +23,6 @@ function Signup() {
 
     useEffect(()=>{
         if(isError){
-            // console.log(message);
             toast.error(message)
         }
 
@@ -41,13 +39,9 @@ function Signup() {
     }
     const submit = (e)=>{
         e.preventDefault()
-        // delete formData.password2
-
         if(password2.length>=8 && password2===password){
             dispatch(signup(formData))
-            // console.log(formData);
         }else{
-            // console.log("Not complete");
             toast.error('Not complete data')
             return
         }
@@ -63,20 +57,7 @@ function Signup() {
             <h1 className=' mb-5 text-3xl text-black font-bold'>
                 Sign Up
             </h1>
-            {/* <div>
-                <label htmlFor="email">
-                    Email 
-                </label>
-                <input type="email" id='email' value={email} onChange={change} />
-                
-            </div>
-
-            <div>
-                <label htmlFor="password">
-                    Password 
-                </label>
-                <input type="password" id='password' value={password} onChange={change} />
-            </div> */}
+            
             <div className=' flex flex-col gap-4'>
                 <div>
                     <label className="input input-bordered input-success flex items-center gap-3 bg-white text-black ">

@@ -13,14 +13,26 @@ const initialState = {
     isError: false ,
     updateSucess:false,
     updateError:false,
-    id:''
+    id:'',
+    adminStatus: false
 }
 
+export const checkAdminStatus = createAsyncThunk('auth/adminStatus',async(id,thunkAPI)=>{
+    try {
+        const userRef = doc(db,'users',id)
+        const querySnap = await getDoc(userRef)
+
+        if(querySnap.data().isAdmin){
+            return true
+        }else{
+            return false
+        }
+    } catch (error) {
+        
+    }
+})
 export const fetchUsers = createAsyncThunk('user/getAll',async(id,thunkAPI)=>{
     try {
-
-        // const auth = getAuth()
-        // console.log(auth);
         const userRef = doc(db,'users', id) 
 
         const querySnap = await getDoc(userRef)
@@ -127,6 +139,9 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.singleUser = action.payload
+            })
+            .addCase(checkAdminStatus.fulfilled,(state,action)=>{
+                state.adminStatus = action.payload
             })
     }
 })

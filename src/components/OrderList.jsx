@@ -1,43 +1,26 @@
 import OrderItem from "./OrderItem"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchCart, reset } from "../features/cart/cartSlice"
 import { reset as res } from "../features/order/orderSlice"
-import { fetchUser, resetSingleUser } from "../features/user/userSlice"
+import { fetchUser } from "../features/user/userSlice"
 import BoxSpinner from "./BoxSpinner"
 import { useState } from "react"
-import { closeOrder, fetchOrders, pendingOrder } from "../features/order/orderSlice"
-import { toast } from "react-toastify"
+import { closeOrder, pendingOrder } from "../features/order/orderSlice"
 
 
 function OrderList({orders}) {
 
   const dispatch = useDispatch()
-  const {isLoading, cart} = useSelector((state)=> state.cart)
-  const [status, setStatus] = useState('')
+  const [order, setOrder] = useState({})
   const [orderId, setOrderId] = useState('')
   const {isLoading:userLoading, singleUser} = useSelector((state)=>state.user)
 
 
-  const showModal = (cartId, userId, status, id)=>{
-    setStatus(status)
+  const showModal = (order,id)=>{
     setOrderId(id)
+    setOrder(order)
+    dispatch(fetchUser(order.userRef))
     document.getElementById('viewOrderModal').showModal()
 
-    if(cartId !== undefined && userId !== undefined){
-      dispatch(fetchCart(cartId))
-      dispatch(fetchUser(userId))
-    }else if(cartId !== undefined && userId === undefined){
-      dispatch(fetchCart(cartId))
-      dispatch(resetSingleUser())
-    }else if (userId !== undefined && cartId === undefined){
-      dispatch(fetchUser(userId))
-      dispatch(reset())
-    }else{
-      dispatch(reset())
-      dispatch(resetSingleUser())
-      // console.log("Error getting order details");
-      toast.error("Error getting order details")
-    }
   }
   return (
     <>
@@ -87,10 +70,9 @@ function OrderList({orders}) {
                     <div className="stat-desc text-gray-500 text-sm font-semibold">Name</div>
                     <div className=" stat-title text-center text-xl font-bold text-black">
                         {
-                          singleUser.name
+                          singleUser.firstName + ' ' + singleUser.lastName
                         }
                     </div>
-                    {/* <div className="stat-desc">21% more than last month</div> */}
                   </div>
 
                   <div className="stat bg-white text-black">
@@ -102,7 +84,6 @@ function OrderList({orders}) {
                         singleUser.email
                       }
                     </div>
-                    {/* <div className="stat-desc">21% more than last month</div> */}
                   </div>
 
                   <div className="stat bg-white text-black">
@@ -111,10 +92,9 @@ function OrderList({orders}) {
                     </div>
                     <div className="stat-title text-center text-xl font-bold text-black">
                       {
-                        singleUser.number
+                        singleUser.phoneNumber
                       }
                     </div>
-                    {/* <div className="stat-desc">21% more than last month</div> */}
                   </div>
                   
                 </div>
@@ -129,10 +109,8 @@ function OrderList({orders}) {
             <h1 className="text-lg text-black font-semibold">
               Cart details 
             </h1>
-            {
-              isLoading? <BoxSpinner/>:
-              Object.keys(cart).length>=1? 
-              <div className="overflow-x-auto mt-3">
+            
+            <div className="overflow-x-auto mt-3">
                 <table className="table bg-gray-200 border-none text-black">
                   {/* head */}
                   <thead className="text-black text-md">
@@ -145,7 +123,7 @@ function OrderList({orders}) {
                   <tbody>
                     {/* row 1 */}
                     {
-                      cart.items.map((cart,index)=>(
+                      order.cart?.map((cart,index)=>(
                         <tr key={index} className=" border-b-gray-400">
                           <td>
                             {
@@ -167,21 +145,26 @@ function OrderList({orders}) {
                     }
                   </tbody>
                 </table>
-              </div>:
-              <p>
-                No available Cart details {cart.length}
-              </p>
-            }
+            </div>
+
+            <h3 className="mt-3 text-black">
+              Address
+            </h3>
+            <p>
+              {
+                order.address
+              }
+            </p>
           </div>
           
           <div className="modal-action">
             <form method="dialog">
               {
-                status === 'pending'? <button className="btn bg-green-500 border-0 text-white hover:border hover:border-green-500 hover:bg-transparent hover:text-green-700 mr-4" onClick={()=>{
+                order.status === 'pending'? <button className="btn bg-green-500 border-0 text-white hover:border hover:border-green-500 hover:bg-transparent hover:text-green-700 mr-4" onClick={()=>{
                   dispatch(closeOrder(orderId))
                   dispatch(res())
                 }}>Close Order</button>:
-                status === 'open'? <button className="btn bg-green-500 border-0 text-white hover:border hover:border-green-500 hover:bg-transparent hover:text-green-700 mr-4" onClick={()=>{
+                order.status === 'open'? <button className="btn bg-green-500 border-0 text-white hover:border hover:border-green-500 hover:bg-transparent hover:text-green-700 mr-4" onClick={()=>{
                   dispatch(pendingOrder(orderId))
                   dispatch(res())
                 }}>Make Pending</button>:

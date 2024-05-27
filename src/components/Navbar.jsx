@@ -22,7 +22,7 @@ function Navbar() {
             </h3>
         </div>
         <div className=' w-full h-4/5 text-gray-200'>
-            <Link className={`flex items-center gap-2 py-3 px-5 text-xl ${pathMatchRoute('/')&&'text-black bg-white font-medium'}`} to={'/'}>
+            <Link className={`flex items-center gap-2 py-2 px-5 text-xl ${pathMatchRoute('/')&&'text-black bg-white font-medium'}`} to={'/'}>
                 <FaHome/> Home
             </Link>
             
@@ -30,7 +30,7 @@ function Navbar() {
                 <FaShoppingBag/> Products
             </Link>
             
-            <Link className={`flex items-center gap-2 px-5 py-3 text-xl ${pathMatchRoute('/orders')&&'text-black bg-white font-medium'}`} to={'/orders'}>
+            <Link className={`flex items-center gap-2 px-5 py-2 text-xl ${pathMatchRoute('/orders')&&'text-black bg-white font-medium'}`} to={'/orders'}>
                 <FaTruck/> Order
             </Link>
         </div>
