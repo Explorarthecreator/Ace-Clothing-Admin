@@ -13,7 +13,7 @@ function NewProduct() {
     const [imago, setImago] = useState(null)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    // const [tag,setTag] = useState('')
+
     const [formData, setFormData] = useState({
         name:'',
         description:'',
@@ -54,7 +54,6 @@ function NewProduct() {
                 // Observe state change events such as progress, pause, and resume
                 // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                // console.log('Upload is ' + progress + '% done');
                 if (progress === 0){
                     toast.info('Image is uploading')
                 }
@@ -62,8 +61,6 @@ function NewProduct() {
                 if(progress === 100){
                     toast.success('Image upload successful')
                 }
-                // toast.info(`Image upload is ${progress}% done`)
-                
                 switch (snapshot.state) {
                 case 'paused':
                     console.log('Upload is paused');
@@ -139,23 +136,15 @@ function NewProduct() {
     }
     const checking = (check)=>{
         if(sizes.includes(check)){
-            // ger.pop()
             const index = sizes.indexOf(check)
             if(index>-1){
                 sizes.splice(index,1)
             }
             setSizes(sizes)
-            // formData.size = sizes
         }else{
             sizes.push(check)
             setSizes(sizes)
-            // formData.size = sizes
         }
-
-        // formData.size = sizes
-        // console.log(size);
-        console.log(sizes);
-        // console.log(ger);
     }
   return (
     <div className=" p-2 md:p-5 lg:p-10">
@@ -199,10 +188,8 @@ function NewProduct() {
                         Tag
                     </label>
 
-                    {/* <input type="text" id="tag"  value={tag} className=" input input-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={change} /> */}
                     <select id="tag" className="select select-bordered w-full max-w-xs text-black font-medium bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" value={tag} onChange={change}>
                         
-                        {/* <option disabled selected className="text-black"></option> */}
                         <option value={""} className=" font-medium">
                             Select a product tag
                         </option>
