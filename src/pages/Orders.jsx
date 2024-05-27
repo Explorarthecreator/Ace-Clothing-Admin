@@ -4,10 +4,15 @@ import { useEffect } from "react"
 import { fetchOrders } from "../features/order/orderSlice"
 import Spinner from "../components/Spinner"
 import { toast } from "react-toastify"
+import { checkAdminStatus } from "../features/user/userSlice"
 
 function Orders() {
   const {orders, isLoading, isSuccess, isError,message, statusSuccess, statusError} = useSelector((state)=>state.order)
+  const {id} = useSelector((state)=>state.auth)
+  const {adminStatus} = useSelector((state)=> state.user)
   const dispatch = useDispatch()
+
+
   useEffect(()=>{
     if(statusSuccess){
       toast.success('Order updated successfully')
@@ -15,17 +20,26 @@ function Orders() {
     if (statusError){
       toast.error(message)
     }
-    dispatch(fetchOrders())
-    if(orders.length <=0){
-      dispatch(fetchOrders())
+    dispatch(checkAdminStatus(id))
+
+    if(adminStatus){
+      if(orders.length <=0){
+        dispatch(fetchOrders())
+      }
     }
+    
     if(isError){
       toast.error(message)
     }
-  },[orders.length,dispatch, isError, isSuccess, message, statusError, statusSuccess])
+  },[orders.length,dispatch, isError, isSuccess, message, statusError, statusSuccess,adminStatus,id])
 
   if(isLoading){
     return <Spinner/>
+  }
+  if(adminStatus === false){
+    return <p className="text-black h-1/2 flex items-center justify-center mt-20 font-medium text-xl lg:text-2xl">
+      You are not authorised to view this page, Please contact an Admin
+    </p>
   }
   return (
     <div className="p-5 lg:p-10">
