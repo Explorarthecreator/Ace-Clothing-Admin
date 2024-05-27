@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import Spinner from "../components/Spinner"
 import { useSelector, useDispatch } from "react-redux"
 import { fetchOrders} from "../features/order/orderSlice"
-import { fetchUsers } from "../features/user/userSlice"
+import { checkAdminStatus, fetchUsers } from "../features/user/userSlice"
 import { Doughnut } from "react-chartjs-2"
 import { toast } from "react-toastify"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -15,14 +15,19 @@ function Homepage() {
   ChartJS.register(ArcElement, Tooltip, Legend);
   const {isLoading, orders, isError, message: orderMessage} = useSelector((state)=>state.order)
   const {id} = useSelector((state)=>state.auth)
-  const {user, isLoading: userLoading, isSuccess, updateError, updateSucess, message} = useSelector((state)=>state.user)
+  const {user, isLoading: userLoading, isSuccess, updateError, updateSucess, message, adminStatus} = useSelector((state)=>state.user)
   const dispatch = useDispatch()
 
 
   
   useEffect(()=>{
-    dispatch(fetchOrders())
-    dispatch(fetchUsers(id))
+    dispatch(checkAdminStatus(id))
+
+    if(adminStatus){
+      dispatch(fetchOrders())
+      dispatch(fetchUsers(id))
+    }
+    
 
     if(isError){
       toast.error(orderMessage)
@@ -37,7 +42,7 @@ function Homepage() {
       toast.error(message)
     }
     
-  },[dispatch,id, isSuccess, updateError,updateSucess, message, isError, orderMessage])
+  },[dispatch,id, isSuccess, updateError,updateSucess, message, isError, orderMessage,adminStatus])
 
 // Chart JS
   const data = {
@@ -67,6 +72,11 @@ function Homepage() {
   if(isLoading){
     return <Spinner/>
   }
+  if(adminStatus === false){
+    return <p className="text-black h-1/2 flex items-center justify-center mt-20 font-medium text-xl lg:text-2xl">
+      You are not authorised to view this page, Please contact an Admin
+    </p>
+  }
   return (
     <div className=' p-5 lg:p-10'>
         <div className="w-full">
@@ -83,7 +93,6 @@ function Homepage() {
                     orders.filter((order)=>order.data.status === 'open').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
 
               <div className="stat bg-white text-black">
@@ -93,7 +102,6 @@ function Homepage() {
                     orders.filter((order)=>order.data.status === 'pending').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
 
               <div className="stat bg-white text-black">
@@ -103,7 +111,6 @@ function Homepage() {
                     orders.filter((order)=>order.data.status === 'closed').length
                   }
                 </div>
-                {/* <div className="stat-desc">21% more than last month</div> */}
               </div>
           
             </div>
@@ -112,35 +119,33 @@ function Homepage() {
 
 
           <div className=" text-black mt-5">
-            <h1 className=" mb-7 text-3xl font-semibold">
-              Admin
-            </h1>
+            
 
             {
               userLoading? <BoxSpinner col={'white'}/>:
-              user.filter((er)=>er.data.isAdmin === true).length >=1?
-              <UserList users={user.filter((er)=>er.data.isAdmin === true)}/>:
-              <p>
-                No Admin User
-              </p>
-
+              user.filter((er)=>er.data.isAdmin === true).length >=1&&
+              <>
+                <h1 className=" mb-7 text-3xl font-semibold">
+                  Admin
+                </h1>
+                <UserList users={user.filter((er)=>er.data.isAdmin === true)}/>
+              </>
             }
           </div>
 
 
           <div className=" text-black mt-5">
-            <h1 className=" mb-7 text-3xl font-semibold">
-              Users
-            </h1>
+            
 
             {
               userLoading? <BoxSpinner col={'white'}/>:
-              user.filter((er)=>er.data.isAdmin === false).length >=1?
-              <UserList users={user.filter((er)=>er.data.isAdmin === false)}/>:
-              <p>
-                No User Data
-              </p>
-
+              user.filter((er)=>er.data.isAdmin === false).length >=1 &&
+              <>
+                <h1 className=" mb-7 text-3xl font-semibold">
+                  Users
+                </h1>
+                <UserList users={user.filter((er)=>er.data.isAdmin === false)}/>
+              </>
             }
           </div>
         </div>

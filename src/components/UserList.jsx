@@ -6,7 +6,6 @@ import BoxSpinner from "./BoxSpinner";
 
 
 function UserList({users}) {
-    // const [id, setId] = useState({})
     const {id, isLoading} = useSelector((state)=>state.user)
     const dispatch = useDispatch()
     const showModal = (id)=>{
@@ -16,10 +15,7 @@ function UserList({users}) {
     }
     const changeStatus = (e)=>{
         e.preventDefault()
-        // ger(id)
-        dispatch(updateUserStatus(id))
-        // console.log(id);
-        
+        dispatch(updateUserStatus(id))        
     }
     
 
@@ -57,9 +53,7 @@ function UserList({users}) {
                   }
                 </tbody>
               </table>
-
-            {/* Open the modal using document.getElementById('ID').showModal() method */}
-            {/* <button className="btn">open modal</button> */}
+              
             <dialog id="my_modal_1" className="modal">
                 <div className="modal-box bg-white">
                     <h3 className="font-bold text-lg text-warning">Warning!</h3>

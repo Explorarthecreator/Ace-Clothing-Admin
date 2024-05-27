@@ -9,16 +9,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth"
 
 function MainNav() {
     const auth = getAuth()
-
-    // const [changeDetails, setChangeDetails]=useState(false)
-    // const [formData, setFormData] = useState({
-    //   name : 'Anonymous'|| auth.currentUser.displayName,
-    // //   email : auth.currentUser.email,
-    // })
-    // const {name} = formData
     const [name, setName] = useState('')
     const {hideNav,showNav} = useSelector((state)=>state.nav)
-    // const {loggedIn,user} = useSelector((state)=>state.auth)
     const dispatch = useDispatch()
 
     useEffect(()=>{

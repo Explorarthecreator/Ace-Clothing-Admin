@@ -1,32 +1,29 @@
 import { FaArrowLeft } from "react-icons/fa"
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-// import { db } from "../firebase.config";
 import { Link, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { createProduct, reset } from "../features/product/productSlice";
 import { useSelector, useDispatch } from "react-redux";
-// import Spinner from "../components/Spinner";
 
 
 function NewProduct() {
 
     const {isLoading, isSuccess, isError, message} = useSelector((state)=> state.product)
     const [imago, setImago] = useState(null)
-    // const [url, setUrl] = useState(null)
-
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
     const [formData, setFormData] = useState({
         name:'',
         description:'',
         price:1,
         tag:'',
-        size:'',
+        size:[],
         image:''
     })
 
-
+    const [sizes,setSizes] = useState([])
     useEffect(()=>{
         if(isSuccess){
             toast.success('Product Added Successfully')
@@ -38,7 +35,7 @@ function NewProduct() {
         }
         dispatch(reset())
     },[isError, isSuccess, message, navigate,dispatch])
-    const {name,description,price,tag,size} = formData
+    const {name,description,tag,price} = formData
     // Store Image
 
     const storeImage = async(image)=>{
@@ -57,9 +54,13 @@ function NewProduct() {
                 // Observe state change events such as progress, pause, and resume
                 // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-                toast.info(`Image upload is ${progress}% done`)
-                
+                if (progress === 0){
+                    toast.info('Image is uploading')
+                }
+
+                if(progress === 100){
+                    toast.success('Image upload successful')
+                }
                 switch (snapshot.state) {
                 case 'paused':
                     console.log('Upload is paused');
@@ -67,6 +68,8 @@ function NewProduct() {
                 case 'running':
                     console.log('Upload is running');
                     break;
+                default:
+                    console.log("object");
                 }
             }, 
             (error) => {
@@ -77,9 +80,7 @@ function NewProduct() {
                 // Handle successful uploads on complete
                 // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                // console.log('File available at', downloadURL);
-                resolve(downloadURL)
-                // setUrl(downloadURL)
+                    resolve(downloadURL)
                 });
             }
             );
@@ -87,22 +88,24 @@ function NewProduct() {
     }
     const change = (e)=>{
         if(e.target.files){
-            // console.log("Na picture you change o");
             setImago(e.target.files[0])
-
         }
         else{
-            // console.log("No be picture you change o");
             setFormData((prevState)=>({
                 ...prevState,
                 [e.target.id]:e.target.value
             }))
         }
+
+
+        if(e.target.id === 'tag'){
+            setSizes([])
+        }
+        console.log(formData);
     }
     const createProductForm = async(e)=>{
         e.preventDefault()
-        // console.log(imago);
-        if(name === '' || description === '' || tag==='' || size === ''){
+        if(name === '' || description === '' || tag===''){
             toast.error('Fields cannot be empty')
             return
         }
@@ -114,9 +117,10 @@ function NewProduct() {
             toast.error('Please upload an image')
             return
         }
-        // console.log(imago);
-        // toast.success('Oba is King')
-        // console.log(formData);
+        if(sizes.length <= 0){
+            toast.error('Please select a size')
+            return
+        }
 
         const imageUrl = await storeImage(imago).catch((error)=>{
             toast.error(error)
@@ -125,54 +129,23 @@ function NewProduct() {
 
         formData.image = imageUrl
 
+        formData.size = sizes
 
+        console.log(formData);
         dispatch(createProduct(formData))
-        // console.log(formData);
-
-
-        // const storage = getStorage();
-        // const storageRef = ref(storage, 'images/'+imago.name);
-
-        // const uploadTask = uploadBytesResumable(storageRef, imago);
-
-        // // Register three observers:
-        // // 1. 'state_changed' observer, called any time the state changes
-        // // 2. Error observer, called on failure
-        // // 3. Completion observer, called on successful completion
-        // uploadTask.on('state_changed', 
-        // (snapshot) => {
-        //     // Observe state change events such as progress, pause, and resume
-        //     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        //     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        //     console.log('Upload is ' + progress + '% done');
-        //     switch (snapshot.state) {
-        //     case 'paused':
-        //         console.log('Upload is paused');
-        //         break;
-        //     case 'running':
-        //         console.log('Upload is running');
-        //         break;
-        //     }
-        // }, 
-        // (error) => {
-        //     // Handle unsuccessful uploads
-        // }, 
-        // () => {
-        //     // Handle successful uploads on complete
-        //     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        //     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        //     console.log('File available at\n', downloadURL);
-        //     setUrl(downloadURL)
-        //     console.log(url);
-        //     });
-
-        //     // console.log(url);
-        // }
-        // );
     }
-    // if(isLoading){
-    //     return <Spinner/>
-    // }
+    const checking = (check)=>{
+        if(sizes.includes(check)){
+            const index = sizes.indexOf(check)
+            if(index>-1){
+                sizes.splice(index,1)
+            }
+            setSizes(sizes)
+        }else{
+            sizes.push(check)
+            setSizes(sizes)
+        }
+    }
   return (
     <div className=" p-2 md:p-5 lg:p-10">
         <Link className="btn btn-md bg-black font-bold text-white hover:border-2 hover:border-black hover:bg-transparent hover:shadow-lg" to={'/products'}>
@@ -215,7 +188,40 @@ function NewProduct() {
                         Tag
                     </label>
 
-                    <input type="text" id="tag"  value={tag} className=" input input-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={change} />
+                    <select id="tag" className="select select-bordered w-full max-w-xs text-black font-medium bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" value={tag} onChange={change}>
+                        
+                        <option value={""} className=" font-medium">
+                            Select a product tag
+                        </option>
+
+                        <option value={"shoe"} className=" font-medium">
+                            Shoe
+                        </option>
+
+                        <option value={"t-shirt"} className=" font-medium">
+                            T-shirt
+                        </option>
+
+                        <option value={"trouser"} className=" font-medium">
+                            Trouser
+                        </option>
+
+                        <option value={"heel"} className=" font-medium">
+                            Heels
+                        </option>
+
+                        <option value={"watch"} className=" font-medium">
+                            Watch
+                        </option>
+
+                        <option value={"gown"} className=" font-medium">
+                            Gown
+                        </option>
+
+                        <option value={"hoodie"} className=" font-medium">
+                            Hoodie
+                        </option>
+                    </select>
                 </div>
 
                 <div className=" form-control mt-3">
@@ -223,9 +229,196 @@ function NewProduct() {
                         Size
                     </label>
 
-                    <input type="text" id="size" value={size} className=" input input-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={change} />
-                </div>
+                    {/* <input type="text" id="size" value={size} className=" input input-black bg-white mt-1 border-2 border-black focus:outline-none focus:border-black" onChange={change} /> */}
+                    
+                    {/* <div class="flex text-black">
+                        <div class="flex items-center me-4">
+                            <input id="inline-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                            <label for="inline-checkbox" class="ms-2 text-sm font-medium text-black">Inline 1</label>
+                        </div>
+                        <div class="flex items-center me-4">
+                            <input id="inline-2-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                            <label for="inline-2-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inline 2</label>
+                        </div>
+                    </div> */}
+                    {
+                        (tag === 't-shirt' || tag === 'trouser' || tag === 'gown' || tag === 'hoodies') &&
+                        <div className="flex gap-1 p-3">
+                            <div>
+                                <input type="checkbox" id="S" name="size" value="S" className="hidden peer" />
+                                <label htmlFor="S" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking('s')}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">S</div>
+                                    </div>    
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="M" name="size" value="M" className="hidden peer"  />
+                                <label htmlFor="M" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking('m')}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">M</div>
+                                    </div>    
+                                </label>
+                            </div>
 
+                            <div>
+                                <input type="checkbox" id="L" name="size" value="L" className="hidden peer"  />
+                                <label htmlFor="L" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking('l')}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">L</div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="XL" name="size" value="XL" className="hidden peer"  />
+                                <label htmlFor="XL" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking('xl')}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            XL
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="XXL" name="size" value="XXL" className="hidden peer"  />
+                                <label htmlFor="XXL" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking('xxl')}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            XXL
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+                        </div>
+                    }
+                    
+                    {
+                        (tag === 'shoe' || tag === 'heel') &&
+                        <div className="flex gap-1 p-3 flex-wrap">
+                            <div>
+                                <input type="checkbox" id="35" name="size" value="35" className="hidden peer" />
+                                <label htmlFor="35" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(35)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">35</div>
+                                    </div>    
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="36" name="size" value="36" className="hidden peer"  />
+                                <label htmlFor="36" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(36)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">36</div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="37" name="size" value="37" className="hidden peer"  />
+                                <label htmlFor="37" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(37)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">37</div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="38" name="size" value="38" className="hidden peer"  />
+                                <label htmlFor="38" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(38)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            38
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="39" name="size" value="39" className="hidden peer"  />
+                                <label htmlFor="39" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(39)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            39
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="40" name="size" value="40" className="hidden peer"  />
+                                <label htmlFor="40" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(40)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            40
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="41" name="size" value="41" className="hidden peer"  />
+                                <label htmlFor="41" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(41)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            41
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="42" name="size" value="42" className="hidden peer"  />
+                                <label htmlFor="42" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(42)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            42
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="43" name="size" value="43" className="hidden peer"  />
+                                <label htmlFor="43" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(43)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            43
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="44" name="size" value="44" className="hidden peer"  />
+                                <label htmlFor="44" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(44)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            44
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="45" name="size" value="45" className="hidden peer"  />
+                                <label htmlFor="45" className="inline-flex items-center w-8 h-8 justify-center text-black bg-white border border-gray-400 rounded-full cursor-pointer  peer-checked:bg-black peer-checked:text-white hover:text-gray-600 hover:bg-gray-100" onClick={()=>checking(45)}>                           
+                                    <div className="block">
+                                        <div className="w-full text-md font-semibold">
+                                            45
+                                        </div>
+                                    </div>    
+                                </label>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+                <p>
+                    {
+                        sizes
+                    }
+                </p>
                 <div className=" form-control mt-3">
                     <label>
                         Image (only one image allowed)
@@ -241,8 +434,7 @@ function NewProduct() {
                     <button className="btn text-white bg-black mt-5 w-full lg:w-2/5 md:w-2/5">
                         Submit
                     </button>
-                }
-                
+                }   
             </form>
         </section>
     </div>
